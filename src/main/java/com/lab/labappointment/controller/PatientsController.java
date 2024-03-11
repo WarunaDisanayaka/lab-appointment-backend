@@ -4,8 +4,11 @@ package com.lab.labappointment.controller;
 import com.lab.labappointment.entity.PatientsEntity;
 import com.lab.labappointment.service.PatientsService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/patients")
@@ -21,6 +24,22 @@ public class PatientsController {
     @PostMapping("/create")
     public PatientsEntity createUser(@RequestBody PatientsEntity patients) {
         return patientsService.createPatients(patients);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<PatientsEntity> login(@RequestBody Map<String, String> loginRequest) {
+        String username = loginRequest.get("username");
+        String password = loginRequest.get("password");
+
+        if (username != null && password != null) {
+            Optional<PatientsEntity> authenticatedPatient = patientsService.login(username, password);
+
+            if (authenticatedPatient.isPresent()) {
+                return ResponseEntity.ok(authenticatedPatient.get());
+            }
+        }
+
+        return ResponseEntity.status(401).build();
     }
 
     // Get all users
