@@ -16,7 +16,11 @@ public class AppointmentsEntity {
     private Timestamp appointmentTime;
 
     @Column(name = "AppointmentNumber")
-    private Integer appointmentNumber;
+    private String appointmentNumber;
+
+    @Column(name = "Status", nullable = false, columnDefinition = "VARCHAR(20) default 'Pending'")
+    private String status;
+
 
     @ManyToOne
     @JoinColumn(name = "PatientID")
@@ -26,12 +30,16 @@ public class AppointmentsEntity {
 
     // Constructors
     public AppointmentsEntity() {
+        this.status = "Pending";
+
     }
 
     public AppointmentsEntity(Timestamp appointmentTime, Integer appointmentNumber, PatientsEntity patient) {
         this.appointmentTime = appointmentTime;
-        this.appointmentNumber = appointmentNumber;
+        this.appointmentNumber = String.valueOf(appointmentNumber);
         this.patient = patient;
+        this.status = "Pending";
+
     }
 
     // Getters and setters
@@ -51,12 +59,12 @@ public class AppointmentsEntity {
         this.appointmentTime = appointmentTime;
     }
 
-    public Integer getAppointmentNumber() {
+    public String getAppointmentNumber() {
         return appointmentNumber;
     }
 
-    public void setAppointmentNumber(Integer appointmentNumber) {
-        this.appointmentNumber = appointmentNumber;
+    public void setAppointmentNumber(String appointmentNumber) {
+        this.appointmentNumber = String.valueOf(appointmentNumber);
     }
 
     public PatientsEntity getPatient() {
@@ -65,6 +73,14 @@ public class AppointmentsEntity {
 
     public void setPatient(PatientsEntity patient) {
         this.patient = patient;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

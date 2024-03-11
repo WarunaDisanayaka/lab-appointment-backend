@@ -27,6 +27,10 @@ public class AppointmentsService {
     }
 
     public AppointmentsEntity createAppointment(AppointmentsEntity appointment) {
+        String generatedAppointmentNumber = generateAppointmentNumber();
+
+        appointment.setAppointmentNumber(generatedAppointmentNumber);
+
         return appointmentsRepo.save(appointment);
     }
 
@@ -36,6 +40,25 @@ public class AppointmentsService {
             return appointmentsRepo.save(updatedAppointment);
         }
         return null; // Handle not found scenario
+    }
+
+    private String generateAppointmentNumber() {
+        // Logic to generate a unique appointment number (you can customize this)
+        // For example, concatenate a prefix with a sequential number
+        int nextAppointmentNumber = getNextAppointmentNumber();
+        String prefix = "APPT";
+        return prefix + String.format("%04d", nextAppointmentNumber);
+    }
+
+    private int getNextAppointmentNumber() {
+        Optional<AppointmentsEntity> latestAppointment = appointmentsRepo.findTopByOrderByAppointmentNumberDesc();
+
+        return latestAppointment.map(appointment -> {
+            String appointmentNumberStr = String.valueOf(appointment.getAppointmentNumber());
+            return appointmentNumberStr.length() > 4 ?
+                    Integer.parseInt(appointmentNumberStr.substring(4)) + 1 :
+                    1;
+        }).orElse(1);
     }
 
     public void deleteAppointment(int id) {
