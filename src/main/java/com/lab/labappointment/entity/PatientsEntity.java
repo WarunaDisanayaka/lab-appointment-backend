@@ -27,8 +27,8 @@ public class PatientsEntity {
     private String contactNumber;
 
 
-    @OneToMany(mappedBy = "patient")
-    private List<AppointmentsEntity> appointments;
+//    @OneToMany(mappedBy = "patient")
+//    private List<AppointmentsEntity> appointments;
 
     // Constructors, getters, setters, equals, hashCode, etc.
 
@@ -93,11 +93,11 @@ public class PatientsEntity {
         this.contactNumber = contactNumber;
     }
 
-    public List<AppointmentsEntity> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<AppointmentsEntity> appointments) {
-        this.appointments = appointments;
-    }
+//    public List<AppointmentsEntity> getAppointments() {
+//        return appointments;
+//    }
+//
+//    public void setAppointments(List<AppointmentsEntity> appointments) {
+//        this.appointments = appointments;
+//    }
 }

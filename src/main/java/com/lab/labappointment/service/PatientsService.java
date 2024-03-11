@@ -29,4 +29,21 @@ public class PatientsService {
         return patientsRepo.findById(id);
     }
 
+    public Optional<PatientsEntity> login(String username, String password) {
+        // Find a patient by username
+        Optional<PatientsEntity> optionalPatient = patientsRepo.findByUsername(username);
+
+        // Check if the patient with the given username exists
+        if (optionalPatient.isPresent()) {
+            PatientsEntity patient = optionalPatient.get();
+
+
+            if (password.equals(patient.getPassword())) {
+                return Optional.of(patient);
+            }
+        }
+
+        return Optional.empty();
+    }
+
 }
