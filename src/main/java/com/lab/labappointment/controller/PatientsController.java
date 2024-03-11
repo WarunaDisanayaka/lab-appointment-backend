@@ -3,6 +3,7 @@ package com.lab.labappointment.controller;
 
 import com.lab.labappointment.entity.PatientsEntity;
 import com.lab.labappointment.service.PatientsService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -27,7 +28,7 @@ public class PatientsController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<PatientsEntity> login(@RequestBody Map<String, String> loginRequest) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
@@ -39,7 +40,7 @@ public class PatientsController {
             }
         }
 
-        return ResponseEntity.status(401).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
     }
 
     // Get all users

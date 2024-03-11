@@ -3,7 +3,9 @@ package com.lab.labappointment.service;
 
 import com.lab.labappointment.entity.PatientsEntity;
 import com.lab.labappointment.repo.PatientsRepo;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -12,12 +14,16 @@ import java.util.Optional;
 public class PatientsService {
 
     private static PatientsRepo patientsRepo = null;
+    private final PasswordEncoder passwordEncoder;
 
-    public PatientsService(PatientsRepo patientsRepo) {
+
+    public PatientsService(PatientsRepo patientsRepo, PasswordEncoder passwordEncoder) {
         this.patientsRepo = patientsRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public PatientsEntity createPatients(PatientsEntity patients) {
+        patients.setPassword(passwordEncoder.encode(patients.getPassword()));
         return patientsRepo.save(patients);
     }
 
@@ -37,8 +43,8 @@ public class PatientsService {
         if (optionalPatient.isPresent()) {
             PatientsEntity patient = optionalPatient.get();
 
-
-            if (password.equals(patient.getPassword())) {
+            // Manually hash the entered password for comparison
+            if (passwordEncoder.matches(password, patient.getPassword())) {
                 return Optional.of(patient);
             }
         }
