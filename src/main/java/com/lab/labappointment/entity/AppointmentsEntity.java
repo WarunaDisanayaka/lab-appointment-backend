@@ -18,6 +18,9 @@ public class AppointmentsEntity {
     @Column(name = "AppointmentNumber")
     private String appointmentNumber;
 
+    @Column(name = "Test")
+    private String test;
+
     @Column(name = "Status", nullable = false, columnDefinition = "VARCHAR(20) default 'Pending'")
     private String status;
 
@@ -34,11 +37,13 @@ public class AppointmentsEntity {
 
     }
 
-    public AppointmentsEntity(Timestamp appointmentTime, Integer appointmentNumber, PatientsEntity patient) {
+    public AppointmentsEntity(Timestamp appointmentTime, Integer appointmentNumber, PatientsEntity patient,String test) {
         this.appointmentTime = appointmentTime;
         this.appointmentNumber = String.valueOf(appointmentNumber);
         this.patient = patient;
         this.status = "Pending";
+        this.test = test;
+
 
     }
 
@@ -82,6 +87,15 @@ public class AppointmentsEntity {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+
 
     @Override
     public boolean equals(Object o) {
