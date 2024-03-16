@@ -39,17 +39,40 @@ public class AppointmentsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppointmentsEntity> updateAppointment(
+    public ResponseEntity<AppointmentsEntity> updateAppointmentStatus(
             @PathVariable int id,
-            @RequestBody AppointmentsEntity updatedAppointment
+            @RequestBody String newStatus
     ) {
-        AppointmentsEntity result = appointmentsService.updateAppointment(id, updatedAppointment);
+        AppointmentsEntity appointment = appointmentsService.getAppointmentById(id).orElse(null);
+
+        if (appointment == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Only update the status
+        appointment.setStatus(newStatus);
+
+        AppointmentsEntity result = appointmentsService.updateAppointment(id, appointment);
+
         return result != null ? ResponseEntity.ok(result) : ResponseEntity.notFound().build();
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable int id) {
         appointmentsService.deleteAppointment(id);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/byPatient/{patientId}")
+    public ResponseEntity<List<AppointmentsEntity>> getAppointmentsByPatientId(@PathVariable int patientId) {
+        List<AppointmentsEntity> appointments = appointmentsService.getAppointmentsByPatientId(patientId);
+
+        if (appointments.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(appointments);
+    }
+
+
 }

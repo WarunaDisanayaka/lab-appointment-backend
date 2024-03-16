@@ -61,6 +61,10 @@ public class AppointmentsService {
         }).orElse(1);
     }
 
+    public List<AppointmentsEntity> getAppointmentsByPatientId(int patientId) {
+        return appointmentsRepo.findByPatientPatientId(patientId);
+    }
+
     public void deleteAppointment(int id) {
         appointmentsRepo.deleteById(id);
     }
