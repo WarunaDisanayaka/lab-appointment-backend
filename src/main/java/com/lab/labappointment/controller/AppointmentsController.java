@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -72,6 +73,12 @@ public class AppointmentsController {
         }
 
         return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/countByStatus")
+    public ResponseEntity<Map<String, Integer>> getCountOfAppointmentsByStatus() {
+        Map<String, Integer> countByStatus = appointmentsService.getCountOfAppointmentsByStatus();
+        return ResponseEntity.ok(countByStatus);
     }
 
 

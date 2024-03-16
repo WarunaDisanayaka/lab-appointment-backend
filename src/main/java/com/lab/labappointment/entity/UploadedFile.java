@@ -35,4 +35,13 @@ public class UploadedFile {
     }
 
 
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+
 }

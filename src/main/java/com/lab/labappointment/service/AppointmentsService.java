@@ -5,13 +5,18 @@ import com.lab.labappointment.repo.AppointmentsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class AppointmentsService {
 
     private final AppointmentsRepo appointmentsRepo;
+
+
 
     @Autowired
     public AppointmentsService(AppointmentsRepo appointmentsRepo) {
@@ -68,4 +73,15 @@ public class AppointmentsService {
     public void deleteAppointment(int id) {
         appointmentsRepo.deleteById(id);
     }
+
+
+    public Map<String, Integer> getCountOfAppointmentsByStatus() {
+        Map<String, Integer> countByStatus = new HashMap<>();
+        countByStatus.put("Confirmed", appointmentsRepo.countAppointmentsByStatus("{\"status\":\"Confirmed\"}"));
+        countByStatus.put("Cancelled", appointmentsRepo.countAppointmentsByStatus("{\"status\":\"Cancelled\"}"));
+        return countByStatus;
+    }
+
+
+
 }
