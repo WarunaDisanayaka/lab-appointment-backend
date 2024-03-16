@@ -52,4 +52,8 @@ public class PatientsService {
         return Optional.empty();
     }
 
+    public long countAllPatients() {
+        return patientsRepo.count();
+    }
+
 }

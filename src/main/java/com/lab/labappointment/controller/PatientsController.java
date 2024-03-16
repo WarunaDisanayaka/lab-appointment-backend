@@ -56,5 +56,10 @@ public class PatientsController {
         return PatientsService.getPatientById(id).orElse(null);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> getCountOfPatients() {
+        long count = patientsService.countAllPatients();
+        return ResponseEntity.ok(count);
+    }
 
 }

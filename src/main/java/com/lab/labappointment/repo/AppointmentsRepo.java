@@ -12,4 +12,7 @@ public interface AppointmentsRepo extends JpaRepository<AppointmentsEntity, Inte
 
     List<AppointmentsEntity> findByPatientPatientId(int patientId);
 
+    int countAppointmentsByStatus(String status);
+
+
 }

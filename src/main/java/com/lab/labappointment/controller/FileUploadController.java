@@ -4,15 +4,22 @@ import com.lab.labappointment.entity.PatientsEntity;
 import com.lab.labappointment.entity.UploadedFile;
 import com.lab.labappointment.repo.PatientsRepo;
 import com.lab.labappointment.repo.UploadedFileRepository;
+import com.lab.labappointment.response.FileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class FileUploadController {
 
     private static final String UPLOAD_DIRECTORY = "uploads";
@@ -53,4 +60,27 @@ public class FileUploadController {
             return "Failed to upload file.";
         }
     }
+
+    @GetMapping("/files/{patientId}")
+    public ResponseEntity<FileResponse> getFilePathsByPatientId(@PathVariable int patientId) {
+        PatientsEntity patient = patientsRepository.findById(patientId).orElse(null);
+        if (patient == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<UploadedFile> uploadedFiles = fileRepository.findByPatient(patient);
+        if (uploadedFiles.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        FileResponse fileResponse = new FileResponse();
+        for (UploadedFile uploadedFile : uploadedFiles) {
+            fileResponse.getFilePaths().add(uploadedFile.getFilePath());
+            fileResponse.getFileNames().add(uploadedFile.getFileName());
+        }
+
+        return ResponseEntity.ok(fileResponse);
+    }
+
+
 }
