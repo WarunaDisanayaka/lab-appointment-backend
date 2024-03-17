@@ -1,7 +1,10 @@
 package com.lab.labappointment.entity;
 
 import jakarta.persistence.*;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Patients")
@@ -25,6 +28,15 @@ public class PatientsEntity {
 
     @Column(name = "ContactNumber")
     private String contactNumber;
+
+    // Inside PatientsEntity class
+
+    @ManyToMany(mappedBy = "patients")
+    private Set<Doctor> doctors = new HashSet<>();
+
+    public Set<Doctor> getDoctors() {
+        return doctors;
+    }
 
 
 //    @OneToMany(mappedBy = "patient")

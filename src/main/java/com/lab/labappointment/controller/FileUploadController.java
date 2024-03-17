@@ -6,6 +6,7 @@ import com.lab.labappointment.repo.PatientsRepo;
 import com.lab.labappointment.repo.UploadedFileRepository;
 import com.lab.labappointment.response.FileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,6 +81,59 @@ public class FileUploadController {
         }
 
         return ResponseEntity.ok(fileResponse);
+    }
+
+    @PutMapping("/files/{fileId}")
+    public ResponseEntity<String> updateFile(@PathVariable Long fileId, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please select a file to upload.");
+        }
+
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIRECTORY + "/" + file.getOriginalFilename());
+            Files.write(path, bytes);
+
+            UploadedFile existingFile = fileRepository.findById(fileId).orElse(null);
+            if (existingFile == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Delete the existing file
+            Files.deleteIfExists(Paths.get(existingFile.getFilePath()));
+
+            // Update file details
+            existingFile.setFileName(file.getOriginalFilename());
+            existingFile.setFilePath(path.toString());
+
+            fileRepository.save(existingFile);
+
+            return ResponseEntity.ok("File updated successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update file.");
+        }
+    }
+
+    @DeleteMapping("/files/{fileId}")
+    public ResponseEntity<String> deleteFile(@PathVariable Long fileId) {
+        UploadedFile fileToDelete = fileRepository.findById(fileId).orElse(null);
+        if (fileToDelete == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // Delete the file from the filesystem
+            Files.deleteIfExists(Paths.get(fileToDelete.getFilePath()));
+
+            // Delete the file record from the database
+            fileRepository.delete(fileToDelete);
+
+            return ResponseEntity.ok("File deleted successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file.");
+        }
     }
 
 
