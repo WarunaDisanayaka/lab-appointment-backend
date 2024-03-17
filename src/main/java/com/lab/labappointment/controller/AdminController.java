@@ -3,11 +3,15 @@ package com.lab.labappointment.controller;
 import com.lab.labappointment.entity.AdminEntity;
 import com.lab.labappointment.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -24,7 +28,18 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public Optional<AdminEntity> login(@RequestBody AdminEntity admin) {
-        return adminService.login(admin.getUsername(), admin.getPassword());
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        String username = loginRequest.get("username");
+        String password = loginRequest.get("password");
+
+        if (username != null && password != null) {
+            Optional<AdminEntity> authenticatedAdmin = adminService.login(username, password);
+
+            if (authenticatedAdmin.isPresent()) {
+                return ResponseEntity.ok(authenticatedAdmin.get());
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
     }
 }
